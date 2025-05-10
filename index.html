@@ -5,6 +5,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Promptus Maximus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap"
+    rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -45,6 +50,7 @@
     }
 
     .title {
+      font-family: 'Cinzel', serif;
       font-size: 4.5rem;
       margin-bottom: 1rem;
       line-height: 1;
@@ -164,7 +170,7 @@
 
     .accordion-header {
       padding: 1rem;
-      background: rgba(16, 59, 38, 0.3);
+      background: rgba(56, 16, 59, 0.3);
       cursor: pointer;
       border-left: 3px solid #966720;
       transition: all 0.3s ease;
@@ -174,10 +180,11 @@
     }
 
     .accordion-header:hover {
-      background: rgba(16, 59, 38, 0.5);
+      background: rgba(56, 16, 59, 0.5);
     }
 
     .accordion-header h2 {
+      font-family: 'Cinzel', serif;
       font-size: 1.5rem;
       margin: 0;
       color: #966720;
@@ -192,6 +199,9 @@
       overflow: hidden;
       transition: max-height 0.5s ease;
       padding: 0 1.5rem;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      letter-spacing: 0.01em;
     }
 
     .accordion-item.active .accordion-header .icon {
@@ -199,12 +209,31 @@
     }
 
     .accordion-item.active .accordion-content {
-      max-height: 500px;
+      max-height: 600px;
       padding: 1.5rem;
     }
 
+    .accordion-content p {
+      margin-bottom: 1.3rem;
+    }
+
+    .accordion-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    .quote {
+      font-style: italic;
+      margin: 1.5rem 0;
+      padding: 1rem 1.5rem;
+      border-left: 2px solid #966720;
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(0, 0, 0, 0.15);
+      border-radius: 0 4px 4px 0;
+      font-size: 1.15rem;
+    }
+
     .cta {
-      background: linear-gradient(90deg, #966720 0%, #103B26 100%);
+      background: linear-gradient(90deg, #966720 0%, #18103B 100%);
       color: white;
       border: none;
       padding: 1rem 2rem;
@@ -228,6 +257,16 @@
       font-size: 0.9rem;
       opacity: 0.7;
       font-style: italic;
+    }
+
+    .section {
+      background: rgba(56, 16, 59, 0.3);
+      border-left: 3px solid #966720;
+      padding: 1.5rem;
+      border-radius: 0 8px 8px 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
     }
 
     @media (max-width: 768px) {
