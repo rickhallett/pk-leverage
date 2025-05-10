@@ -1,189 +1,508 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>The Compounding Power of Leverage</title>
-  <style>
-    :root {
-      --bg: #111;
-      --panel: #1e1e1e;
-      --text: #eee;
-      --accent: #36d364;
-    }
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Prompt King</title>
+  <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
 
     body {
-      font-family: system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      gap: 40px;
+      font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+      background: linear-gradient(135deg, #18103B 0%, #3B1016 100%);
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    h1 {
-      font-size: 2.4rem;
-      margin: 0;
-      text-align: center;
-      line-height: 1.2;
+    .container {
+      width: 50%;
+      max-width: 50vw;
+      padding: 5vh 3vw;
+      min-height: 100vh;
+      position: relative;
     }
 
-    p.lead {
-      font-size: 1.1rem;
-      margin: 0;
-      color: #bbb;
-      text-align: center;
-      max-width: 700px;
-    }
-
-    section {
+    .background-texture {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 800px;
-      background: var(--panel);
-      padding: 32px 40px;
-      border-radius: 18px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
+      height: 100%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23966720" stroke-width="0.5" stroke-opacity="0.1"/></svg>');
+      opacity: 0.1;
+      z-index: -1;
     }
 
-    label {
+    .header {
+      margin-bottom: 3vh;
+      position: relative;
+    }
+
+    .title {
+      font-size: 4.5rem;
+      margin-bottom: 1rem;
+      line-height: 1;
+      background: linear-gradient(to right, #966720, #f0c080);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 80%;
+      margin-top: 0.5rem;
+      border-bottom: 1px solid #966720;
+      padding-bottom: 1rem;
+    }
+
+    .graph-container {
+      background: rgba(24, 16, 59, 0.3);
+      border-radius: 8px;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .graph-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #966720;
+    }
+
+    .graph-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .control-group {
+      flex: 1;
+      min-width: 140px;
+    }
+
+    .control-label {
       display: block;
-      margin-top: 22px;
-      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     input[type="range"] {
+      flex: 1;
       width: 100%;
-      margin-top: 6px;
-      cursor: pointer;
+      accent-color: #966720;
     }
 
-    table {
+    .value-display {
+      font-family: monospace;
+      background: rgba(150, 103, 32, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      min-width: 3rem;
+      text-align: center;
+    }
+
+    #graph-canvas {
+      width: 100%;
+      height: 200px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      margin-top: 1rem;
+    }
+
+    .results-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 28px;
-      font-variant-numeric: tabular-nums lining-nums;
+      margin-top: 1rem;
+      font-variant-numeric: tabular-nums;
     }
 
-    th,
-    td {
-      padding: 12px 6px;
-      border-bottom: 1px solid #333;
-    }
-
-    th {
+    .results-table th,
+    .results-table td {
+      padding: 0.5rem;
       text-align: left;
-      color: #ccc;
+      border-bottom: 1px solid rgba(150, 103, 32, 0.3);
     }
 
-    td {
-      text-align: right;
+    .results-table th {
+      color: rgba(255, 255, 255, 0.7);
+      font-weight: normal;
     }
 
-    footer {
-      font-size: .9rem;
-      color: #777;
-      text-align: center;
-      max-width: 700px;
+    .results-table td {
+      font-weight: bold;
     }
 
-    code,
-    .code {
-      font-family: monospace;
-      background: #222;
-      padding: 2px 4px;
+    .accordion {
+      margin-top: 2rem;
+    }
+
+    .accordion-item {
+      margin-bottom: 1rem;
       border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: rgba(59, 16, 22, 0.3);
+    }
+
+    .accordion-header {
+      padding: 1rem;
+      background: rgba(16, 59, 38, 0.3);
+      cursor: pointer;
+      border-left: 3px solid #966720;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion-header:hover {
+      background: rgba(16, 59, 38, 0.5);
+    }
+
+    .accordion-header h2 {
+      font-size: 1.5rem;
+      margin: 0;
+      color: #966720;
+    }
+
+    .accordion-header .icon {
+      transition: transform 0.3s ease;
+    }
+
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+      padding: 0 1.5rem;
+    }
+
+    .accordion-item.active .accordion-header .icon {
+      transform: rotate(180deg);
+    }
+
+    .accordion-item.active .accordion-content {
+      max-height: 500px;
+      padding: 1.5rem;
+    }
+
+    .cta {
+      background: linear-gradient(90deg, #966720 0%, #103B26 100%);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 2rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+    }
+
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      opacity: 0.7;
+      font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        max-width: 100vw;
+      }
+
+      .title {
+        font-size: 3rem;
+      }
     }
   </style>
 </head>
+
 <body>
-  <h1>The Compounding Power of Leverage</h1>
-  <p class="lead">A £230 monthly subscription works out to <span class="code">£1.92&nbsp;per&nbsp;hour</span>. Use the sliders to experience how a 10×–100× force‑multiplier transforms the economics of your time.</p>
+  <div class="container">
+    <div class="background-texture"></div>
+    <header class="header">
+      <h1 class="title">The Prompt King</h1>
+      <p class="subtitle">"All the world's a prompt, and all the men and women merely engineers of it."</p>
+    </header>
 
-  <section>
-    <label for="rate">Baseline value per normal hour (£): <span id="rateVal">75</span></label>
-    <input type="range" id="rate" min="10" max="200" value="75">
+    <div class="graph-container">
+      <h2 class="graph-title">The Compounding Power of Leverage</h2>
 
-    <label for="multiplier">Force‑multiplier (×): <span id="multVal">10</span></label>
-    <input type="range" id="multiplier" min="1" max="100" value="10">
+      <div class="graph-controls">
+        <div class="control-group">
+          <label class="control-label" for="base-value">Baseline value per hour (£)</label>
+          <div class="slider-container">
+            <input type="range" id="base-value" min="10" max="200" value="75">
+            <span class="value-display" id="base-value-display">75</span>
+          </div>
+        </div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Metric</th>
-          <th>Result</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Extra value per boosted hour<br><small>(<em>(m – 1) × V</em>)</small></td>
-          <td id="extraPerHour"></td>
-        </tr>
-        <tr>
-          <td>Return per £1 subscription spend<br><small>(ROI factor)</small></td>
-          <td id="roiFactor"></td>
-        </tr>
-        <tr>
-          <td>Break‑even time this month</td>
-          <td id="breakeven"></td>
-        </tr>
-        <tr>
-          <td>Net monthly gain<br><small>(after £230 fee)</small></td>
-          <td id="netGain"></td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
+        <div class="control-group">
+          <label class="control-label" for="multiplier">Force-multiplier (×)</label>
+          <div class="slider-container">
+            <input type="range" id="multiplier" min="1" max="100" value="10">
+            <span class="value-display" id="multiplier-display">10</span>
+          </div>
+        </div>
+      </div>
 
-  <footer>
-    Equations: cost&nbsp;per&nbsp;hour = 230 ÷ 120 = <span class="code">1.92</span>. ROI factor = ((m−1)·V) ÷ 1.92. Net monthly gain = ((m−1)·V·120) − 230.
-  </footer>
+      <canvas id="graph-canvas"></canvas>
+
+      <table class="results-table">
+        <tr>
+          <th>Extra value per boosted hour</th>
+          <td id="extra-value">£675</td>
+        </tr>
+        <tr>
+          <th>Return per £1 subscription spend</th>
+          <td id="roi-factor">×351</td>
+        </tr>
+        <tr>
+          <th>Break-even time this month</th>
+          <td id="breakeven">20 min</td>
+        </tr>
+        <tr>
+          <th>Net monthly gain (after £230 fee)</th>
+          <td id="net-gain">£80,770</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="accordion">
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <h2>The Compounding Power of Leverage</h2>
+          <span class="icon">▼</span>
+        </div>
+        <div class="accordion-content">
+          <p>In the digital realm where words shape worlds, the true power lies not in mere knowledge, but in the
+            leverage of prompts that compound with each iteration.</p>
+          <p class="quote">What is now proved was once only imagined. The prompts we craft today become the realities of
+            tomorrow.</p>
+          <p>Like the quill of Shakespeare or the prose of Woolf, a well-crafted prompt carries the weight of
+            possibility, the intrigue of politics, and the inspiration of poetry—all distilled into pure potential.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <h2>Ancient Wisdom, Modern Application</h2>
+          <span class="icon">▼</span>
+        </div>
+        <div class="accordion-content">
+          <p>The art of prompting draws from centuries of rhetorical tradition, now applied to the cutting edge of
+            technology. What was once the domain of orators and poets now belongs to those who speak the language of
+            machines.</p>
+          <p>Through careful cultivation of this craft, you too can harness this leverage—turning words into exponential
+            outcomes.</p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <h2>Knowledge Freely Given</h2>
+          <span class="icon">▼</span>
+        </div>
+        <div class="accordion-content">
+          <p>While others guard their secrets jealously, here we believe in the radical power of open knowledge. The
+            prompts, techniques, and frameworks that have revolutionized industries—shared freely with those who seek
+            them.</p>
+          <p>For in the economy of ideas, true wealth comes not from hoarding wisdom but from its proliferation.</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="https://oceanheart.ai" class="cta">Claim Your Prompt Power</a>
+
+    <footer class="footer">
+      <p>"We know what we are, but know not what we may become." — With the right prompts, there are no limits.</p>
+    </footer>
+  </div>
 
   <script>
-    const COST_PER_HOUR = 1.92;
+    // Graph and calculations
+    const COST_PER_HOUR = 1.92; // £230 monthly subscription / 120 hours
     const MONTHLY_HOURS = 120;
     const FEE = 230;
 
-    const rate = document.getElementById('rate');
-    const multiplier = document.getElementById('multiplier');
-    const rateVal = document.getElementById('rateVal');
-    const multVal = document.getElementById('multVal');
-    const extraPerHour = document.getElementById('extraPerHour');
-    const roiFactor = document.getElementById('roiFactor');
+    const baseValueSlider = document.getElementById('base-value');
+    const multiplierSlider = document.getElementById('multiplier');
+    const baseValueDisplay = document.getElementById('base-value-display');
+    const multiplierDisplay = document.getElementById('multiplier-display');
+    const extraValue = document.getElementById('extra-value');
+    const roiFactor = document.getElementById('roi-factor');
     const breakeven = document.getElementById('breakeven');
-    const netGain = document.getElementById('netGain');
+    const netGain = document.getElementById('net-gain');
+    const canvas = document.getElementById('graph-canvas');
+    const ctx = canvas.getContext('2d');
 
-    // Format a number as localised British pounds with no decimal part
+    // Set canvas resolution
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      // Clear and redraw when resized
+      updateGraph();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Format currency
     function formatCurrency(value) {
-      return '£' + value.toLocaleString('en-UK', { maximumFractionDigits: 0 });
+      return '£' + value.toLocaleString('en-GB', { maximumFractionDigits: 0 });
     }
 
-    function update() {
-      const V = +rate.value;
-      const m = +multiplier.value;
-      rateVal.textContent = V;
-      multVal.textContent = m;
+    // Update calculations and graph
+    function updateValues() {
+      const baseValue = parseInt(baseValueSlider.value);
+      const multiplier = parseInt(multiplierSlider.value);
 
-      const extra = (m - 1) * V;
+      baseValueDisplay.textContent = baseValue;
+      multiplierDisplay.textContent = multiplier;
+
+      const extra = (multiplier - 1) * baseValue;
       const roi = extra / COST_PER_HOUR;
-      const breakHrs = FEE / extra;
-      const net = extra * MONTHLY_HOURS - FEE;
+      const breakEvenMinutes = (FEE / extra) * 60;
+      const monthlyGain = (extra * MONTHLY_HOURS) - FEE;
 
-      extraPerHour.textContent = formatCurrency(extra);
-      roiFactor.textContent = '×' + roi.toFixed(0);
-      breakeven.textContent = (breakHrs * 60).toFixed(0) + ' min';
-      netGain.textContent = formatCurrency(net);
+      extraValue.textContent = formatCurrency(extra);
+      roiFactor.textContent = '×' + Math.round(roi);
+      breakeven.textContent = Math.round(breakEvenMinutes) + ' min';
+      netGain.textContent = formatCurrency(monthlyGain);
+
+      updateGraph();
     }
 
-    rate.addEventListener('input', update);
-    multiplier.addEventListener('input', update);
-    update();
+    // Draw the graph
+    function updateGraph() {
+      const baseValue = parseInt(baseValueSlider.value);
+      const multiplier = parseInt(multiplierSlider.value);
+      const width = canvas.width / window.devicePixelRatio;
+      const height = canvas.height / window.devicePixelRatio;
+
+      // Clear canvas
+      ctx.clearRect(0, 0, width, height);
+
+      // Background
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, width, height);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(150, 103, 32, 0.2)';
+      ctx.lineWidth = 1;
+
+      // Vertical grid lines
+      for (let i = 0; i <= 10; i++) {
+        const x = (width / 10) * i;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+
+      // Horizontal grid lines
+      for (let i = 0; i <= 5; i++) {
+        const y = (height / 5) * i;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // Draw normal growth line
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, height);
+
+      for (let i = 0; i <= width; i++) {
+        const x = i;
+        const normalY = height - (i / width) * height * 0.5;
+        ctx.lineTo(x, normalY);
+      }
+      ctx.stroke();
+
+      // Draw leveraged growth line
+      ctx.strokeStyle = '#966720';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(0, height);
+
+      for (let i = 0; i <= width; i++) {
+        const x = i;
+        const factor = Math.min(multiplier / 10, 10);
+        const leveragedY = height - Math.pow(i / width, 1.5) * height * factor;
+        ctx.lineTo(x, leveragedY);
+      }
+      ctx.stroke();
+
+      // Add labels
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '10px sans-serif';
+      ctx.fillText('Normal Growth', 10, height * 0.55);
+
+      ctx.fillStyle = '#966720';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.fillText(`${multiplier}× Leveraged Growth`, 10, height * 0.2);
+    }
+
+    // Accordion functionality
+    const accordionItems = document.querySelectorAll('.accordion-item');
+
+    accordionItems.forEach(item => {
+      const header = item.querySelector('.accordion-header');
+
+      header.addEventListener('click', () => {
+        // Close all items
+        accordionItems.forEach(accItem => {
+          if (accItem !== item) {
+            accItem.classList.remove('active');
+          }
+        });
+
+        // Toggle current item
+        item.classList.toggle('active');
+      });
+    });
+
+    // Set first accordion item to active by default
+    accordionItems[0].classList.add('active');
+
+    // Initialize
+    baseValueSlider.addEventListener('input', updateValues);
+    multiplierSlider.addEventListener('input', updateValues);
+    updateValues();
   </script>
 </body>
+
 </html>
