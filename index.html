@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Compounding Power of Leverage</title>
+  <style>
+    :root {
+      --bg: #111;
+      --panel: #1e1e1e;
+      --text: #eee;
+      --accent: #36d364;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      gap: 40px;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin: 0;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    p.lead {
+      font-size: 1.1rem;
+      margin: 0;
+      color: #bbb;
+      text-align: center;
+      max-width: 700px;
+    }
+
+    section {
+      width: 100%;
+      max-width: 800px;
+      background: var(--panel);
+      padding: 32px 40px;
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, .45);
+    }
+
+    label {
+      display: block;
+      margin-top: 22px;
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin-top: 6px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+
+    th,
+    td {
+      padding: 12px 6px;
+      border-bottom: 1px solid #333;
+    }
+
+    th {
+      text-align: left;
+      color: #ccc;
+    }
+
+    td {
+      text-align: right;
+    }
+
+    footer {
+      font-size: .9rem;
+      color: #777;
+      text-align: center;
+      max-width: 700px;
+    }
+
+    code,
+    .code {
+      font-family: monospace;
+      background: #222;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h1>The Compounding Power of Leverage</h1>
+  <p class="lead">A £230 monthly subscription works out to <span class="code">£1.92&nbsp;per&nbsp;hour</span>. Use the sliders to experience how a 10×–100× force‑multiplier transforms the economics of your time.</p>
+
+  <section>
+    <label for="rate">Baseline value per normal hour (£): <span id="rateVal">75</span></label>
+    <input type="range" id="rate" min="10" max="200" value="75">
+
+    <label for="multiplier">Force‑multiplier (×): <span id="multVal">10</span></label>
+    <input type="range" id="multiplier" min="1" max="100" value="10">
+
+    <table>
+      <thead>
+        <tr>
+          <th>Metric</th>
+          <th>Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Extra value per boosted hour<br><small>(<em>(m – 1) × V</em>)</small></td>
+          <td id="extraPerHour"></td>
+        </tr>
+        <tr>
+          <td>Return per £1 subscription spend<br><small>(ROI factor)</small></td>
+          <td id="roiFactor"></td>
+        </tr>
+        <tr>
+          <td>Break‑even time this month</td>
+          <td id="breakeven"></td>
+        </tr>
+        <tr>
+          <td>Net monthly gain<br><small>(after £230 fee)</small></td>
+          <td id="netGain"></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    Equations: cost&nbsp;per&nbsp;hour = 230 ÷ 120 = <span class="code">1.92</span>. ROI factor = ((m−1)·V) ÷ 1.92. Net monthly gain = ((m−1)·V·120) − 230.
+  </footer>
+
+  <script>
+    const COST_PER_HOUR = 1.92;
+    const MONTHLY_HOURS = 120;
+    const FEE = 230;
+
+    const rate = document.getElementById('rate');
+    const multiplier = document.getElementById('multiplier');
+    const rateVal = document.getElementById('rateVal');
+    const multVal = document.getElementById('multVal');
+    const extraPerHour = document.getElementById('extraPerHour');
+    const roiFactor = document.getElementById('roiFactor');
+    const breakeven = document.getElementById('breakeven');
+    const netGain = document.getElementById('netGain');
+
+    // Format a number as localised British pounds with no decimal part
+    function formatCurrency(value) {
+      return '£' + value.toLocaleString('en-UK', { maximumFractionDigits: 0 });
+    }
+
+    function update() {
+      const V = +rate.value;
+      const m = +multiplier.value;
+      rateVal.textContent = V;
+      multVal.textContent = m;
+
+      const extra = (m - 1) * V;
+      const roi = extra / COST_PER_HOUR;
+      const breakHrs = FEE / extra;
+      const net = extra * MONTHLY_HOURS - FEE;
+
+      extraPerHour.textContent = formatCurrency(extra);
+      roiFactor.textContent = '×' + roi.toFixed(0);
+      breakeven.textContent = (breakHrs * 60).toFixed(0) + ' min';
+      netGain.textContent = formatCurrency(net);
+    }
+
+    rate.addEventListener('input', update);
+    multiplier.addEventListener('input', update);
+    update();
+  </script>
+</body>
+</html>
